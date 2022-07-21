@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Hero } from '../hero';
-import { HEROES } from '../mock-heroes';
+import { HeroService } from '../hero.service';
+import { MessageService } from '../message.service';
 
 @Component({
   selector: 'app-heroes',
@@ -10,15 +11,25 @@ import { HEROES } from '../mock-heroes';
 export class HeroesComponent implements OnInit {
 
   selectedHero?: Hero;
-  onSelect(hero: Hero): void {
-    this.selectedHero = hero;
-  }
-  
-  heroes = HEROES;
+    
+  heroes: Hero[] = [];
 
-  constructor() { }
+  constructor(
+    private heroService: HeroService,
+    private messageService: MessageService) { }
 
   ngOnInit(): void {
+    /**call getHeroes() here and not in constructor (constructor just for minimal initialization such as wiring constructor parameters to properties)!
+     * If called inside ngOnInit, Angular call this at an appropriate time after constructing a HeroesComponent instance!*/
+    this.getHeroes();
   }
 
+  onSelect(hero: Hero): void {
+    this.selectedHero = hero;
+    this.messageService.add(`HeroesComponent: Selected hero id=${hero.id}`)
+  }
+
+  getHeroes(): void {
+    this.heroService.getHeroes().subscribe(heroes => this.heroes = heroes);
+  }
 }
