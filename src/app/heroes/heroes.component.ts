@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Hero } from '../hero';
-import { HEROES } from '../mock-heroes';
+import { HeroService } from '../hero.service';
 
 @Component({
   selector: 'app-heroes',
@@ -14,11 +14,18 @@ export class HeroesComponent implements OnInit {
     this.selectedHero = hero;
   }
   
-  heroes = HEROES;
+  heroes: Hero[] = [];
 
-  constructor() { }
+  constructor(private heroService: HeroService) { }
+
+  getHeroes(): void {
+    this.heroes = this.heroService.getHeroes();
+  }
 
   ngOnInit(): void {
+    /**call getHeroes() here and not in constructor (constructor just for minimal initialization such as wiring constructor parameters to properties)!
+     * If called inside ngOnInit, Angular call this at an appropriate time after constructing a HeroesComponent instance!*/
+    this.getHeroes();
   }
 
 }
